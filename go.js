@@ -8,20 +8,22 @@ var canvas = document.getElementById("go_board");
 var context = canvas.getContext("2d");
 
 function drawBoardLines(ctx) {
-  var i, drawPoint, drawLength;
+  var i, drawPointX, drawPointY, drawLength;
   drawLength = (numLines - 1) * interval + topLeftX;
 
   for (i = 0; i < numLines; i++) {
-    drawPoint = topLeftX + i * interval;
-    ctx.moveTo(drawPoint, topLeftY);
-    ctx.lineTo(drawPoint, drawLength);
+    drawPointX = topLeftX + i * interval;
+    ctx.beginPath();
+    ctx.moveTo(drawPointX, topLeftY);
+    ctx.lineTo(drawPointX, drawLength);
+    ctx.closePath();
     ctx.stroke();
-  }
 
-  for (i = 0; i < numLines; i++) {
-    drawPoint = topLeftY + i * interval;
-    ctx.moveTo(topLeftX, drawPoint);
-    ctx.lineTo(drawLength, drawPoint);
+    drawPointY = topLeftY + i * interval;
+    ctx.beginPath();
+    ctx.moveTo(topLeftX, drawPointY);
+    ctx.lineTo(drawLength, drawPointY);
+    ctx.closePath();
     ctx.stroke();
   }
 }
