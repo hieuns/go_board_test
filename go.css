@@ -1,5 +1,9 @@
-.main {
-  text-align: center;
+#main {
+  width: 100%;
+}
+#instructions {
+  width: 32%;
+  vertical-align: super;
 }
 #go_board {
   border: 1px solid black;

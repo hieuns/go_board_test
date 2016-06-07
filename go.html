@@ -4,10 +4,24 @@
     <link rel="stylesheet" href="go.css"/>
   </head>
   <body>
-    <div class="main">
-      <canvas id="go_board" width="620" height="660" tabindex="1">
-      </canvas>
-    </div>
+    <table id="main">
+      <tr>
+        <td id="instructions">
+          <h3>Instruction:</h3>
+          <ul>
+            <li>Space bar: change mode</li>
+            <li>Button 1: change current color</li>
+            <li>Back space: clear board</li>
+          </ul>
+          <p>You must focus (click) on the board first to take effect.</p>
+        </td>
+
+        <td>
+          <canvas id="go_board" width="620" height="660" tabindex="1">
+          </canvas>
+        <td>
+      </tr>
+    </table>
 
     <script src="go.js"></script>
   </body>

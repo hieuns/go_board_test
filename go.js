@@ -104,14 +104,15 @@ function addPiece(x, y, color) {
   boardData[x][y] = {color: color};
 }
 
-function addMove(boardX, boardY, color) {
+function addMove(boardX, boardY) {
   moveData.push({x: boardX, y: boardY});
 }
 
 function mouseClick(e) {
   var c = e.target, ctx = c.getContext("2d"),
-    x = e.pageX - e.target.offsetLeft - topLeftX,
-    y = e.pageY - e.target.offsetTop - topLeftY,
+    canvasBoundingRect = c.getBoundingClientRect(),
+    x = e.pageX - canvasBoundingRect.left - topLeftX,
+    y = e.pageY - canvasBoundingRect.top - topLeftY,
     halfInterval = interval / 2,
     boundRight = (numLines - 1) * interval,
     boundBottom = (numLines - 1) * interval;
@@ -123,7 +124,7 @@ function mouseClick(e) {
       return;
     }
     addPiece(x, y, currentPieceColor);
-    addMove(x, y, currentPieceColor);
+    addMove(x, y);
     changeNextColor();
     redrawBoard(c, ctx);
   }
