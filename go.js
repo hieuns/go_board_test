@@ -25,6 +25,26 @@ function drawBoardLines(ctx) {
   }
 }
 
+function drawStarPoints(ctx) {
+  var starPos = [3, 9, 15], i, j, posX, posY;
+  for (i = 0; i < starPos.length; ++i) {
+    for (j = 0; j < starPos.length; ++j) {
+      posX = starPos[i] * interval + topLeftX;
+      posY = starPos[j] * interval + topLeftY;
+      ctx.beginPath();
+      ctx.arc(posX, posY, interval / 8, 0, 2 * Math.PI);
+      ctx.fill();
+    }
+  }
+}
+
+function drawBoard(c, ctx) {
+  drawBoardLines(ctx);
+  drawStarPoints(ctx);
+  drawMode(c, ctx);
+  drawColor(c, ctx);
+}
+
 function drawPiece(boardX, boardY, ctx, color) {
   var posX = boardX * interval + topLeftX,
     posY = boardY * interval + topLeftY,
@@ -47,7 +67,7 @@ function drawPiece(boardX, boardY, ctx, color) {
 function redrawBoard(c, ctx) {
   var i, j;
   ctx.clearRect(0, 0, c.width, c.height);
-  drawBoardLines(ctx);
+  drawBoard(c, ctx);
   for (i = 0; i < numLines; ++i) {
     for (j = 0; j < numLines; ++j) {
       if (existPiece(i, j)) {
@@ -55,8 +75,6 @@ function redrawBoard(c, ctx) {
       }
     }
   }
-  drawMode(c, ctx);
-  drawColor(c, ctx);
 }
 
 function clearBoard(c, ctx) {
@@ -172,9 +190,7 @@ function init(c, ctx) {
     boardData[i] = new Array(numLines);
   }
   moveData = [];
-  drawBoardLines(ctx);
-  drawMode(c, ctx);
-  drawColor(c, ctx);
+  drawBoard(c, ctx);
 }
 
 canvas.addEventListener("click", mouseClick, false);
