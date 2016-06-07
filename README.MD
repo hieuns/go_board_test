@@ -7,8 +7,6 @@ This is a board which you can:
 - change color of next placing pieces (press button 1)
 - change the changing color mode (keep old color as the color for next pieces or change the color sequentially - by press space bar)
 - undo placing pieces (press button j)
-- clear the board (by press button 3*)
+- clear the board (by press button 3)
 
 But first you must focus (click) on the board to make these button pressing take effect (currently I don't know how to auto focus on the canvas when the page finish loading :()
-
-(* there still an error here: when you place some pieces and clear the board, there is an circle still appear in the board. I don't know how to fix this bug, if you know please tell me, thank you very much :D)
