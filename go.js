@@ -73,7 +73,7 @@ function redrawBoard(c, ctx) {
   for (i = 0; i < numLines; ++i) {
     for (j = 0; j < numLines; ++j) {
       if (existPiece(i, j)) {
-        drawPiece(i, j, ctx, boardData[i][j].color);
+        drawPiece(i, j, ctx, boardData[i][j]);
       }
     }
   }
@@ -128,7 +128,7 @@ function changeNextColor(){
 }
 
 function addPiece(x, y, color) {
-  boardData[x][y] = {color: color};
+  boardData[x][y] = color;
 }
 
 function removePiece(x, y) {
