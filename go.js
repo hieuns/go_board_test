@@ -1,6 +1,7 @@
 var topLeftX = 40, topLeftY = 40, interval = 30, numLines = 19,
-  currentMode, currentPieceColor, boardData, moveData;
-var modes = {SAME_COLOR: "same color", CHANGE_COLOR: "change color"},
+  currentColorMode, currentPieceMode, currentPieceColor, boardData, moveData;
+var colorModes = {SAME_COLOR: "same color", CHANGE_COLOR: "change color"},
+  pieceModes = {PLACE: "place", REMOVE: "remove"},
   pieceColors = {BLACK: "black", WHITE: "white"};
 
 var canvas = document.getElementById("go_board");
@@ -41,8 +42,9 @@ function drawStarPoints(ctx) {
 function drawBoard(c, ctx) {
   drawBoardLines(ctx);
   drawStarPoints(ctx);
-  drawMode(c, ctx);
+  drawColorMode(c, ctx);
   drawColor(c, ctx);
+  drawPieceMode(c, ctx);
 }
 
 function drawPiece(boardX, boardY, ctx, color) {
@@ -88,18 +90,25 @@ function clearBoard(c, ctx) {
   redrawBoard(c, ctx);
 }
 
-function drawMode(c, ctx) {
-  var x = 20, y = c.height - 20;
-  ctx.clearRect(x, y - 20, 130, 30);
+function drawColorMode(c, ctx) {
+  var x = 40, y = c.height - 20;
+  ctx.clearRect(x, y - 20, 170, 30);
   ctx.font = "15px Arial";
-  ctx.fillText("Mode: " + currentMode, x, y);
+  ctx.fillText("Color mode: " + currentColorMode, x, y);
 }
 
 function drawColor(c, ctx) {
-  var x = c.width - 140, y = c.height - 20;
+  var x = 260, y = c.height - 20;
   ctx.clearRect(x, y - 20, 130, 30);
   ctx.font = "15px Arial";
   ctx.fillText("Current color: " + currentPieceColor, x, y);
+}
+
+function drawPieceMode(c, ctx) {
+  var x = 440, y = c.height - 20;
+  ctx.clearRect(x, y - 20, 150, 30);
+  ctx.font = "15px Arial";
+  ctx.fillText("Pieces Mode: " + currentPieceMode, x, y);
 }
 
 function existPiece(x, y) {
@@ -109,7 +118,7 @@ function existPiece(x, y) {
 }
 
 function changeNextColor(){
-  if (currentMode != modes.SAME_COLOR) {
+  if (currentColorMode != colorModes.SAME_COLOR) {
     if (currentPieceColor == pieceColors.BLACK) {
       currentPieceColor = pieceColors.WHITE;
     } else {
@@ -122,8 +131,14 @@ function addPiece(x, y, color) {
   boardData[x][y] = {color: color};
 }
 
-function addMove(boardX, boardY) {
-  moveData.push({x: boardX, y: boardY});
+function removePiece(x, y) {
+  var color = boardData[x][y];
+  boardData[x][y] = null;
+  return color;
+}
+
+function addMove(boardX, boardY, type, color) {
+  moveData.push({x: boardX, y: boardY, type: type, color: color});
 }
 
 function mouseClick(e) {
@@ -134,17 +149,23 @@ function mouseClick(e) {
     halfInterval = interval / 2,
     boundRight = (numLines - 1) * interval,
     boundBottom = (numLines - 1) * interval;
+
   if (x >= 0 && y >= 0 && x <= boundRight && y <= boundBottom) {
     x = Math.floor((x + halfInterval) / interval);
     y = Math.floor((y + halfInterval) / interval);
 
-    if (existPiece(x, y)) {
-      return;
+    var exist = existPiece(x, y);
+
+    if (currentPieceMode == pieceModes.PLACE && !exist) {
+      addPiece(x, y, currentPieceColor);
+      addMove(x, y, currentPieceMode, currentPieceColor);
+      changeNextColor();
+      redrawBoard(c, ctx);
+    } else if (currentPieceMode == pieceModes.REMOVE && exist) {
+      var pieceColor = removePiece(x, y);
+      addMove(x, y, currentPieceMode, pieceColor);
+      redrawBoard(c, ctx);
     }
-    addPiece(x, y, currentPieceColor);
-    addMove(x, y);
-    changeNextColor();
-    redrawBoard(c, ctx);
   }
 }
 
@@ -160,18 +181,30 @@ function keyPress(e) {
       }
       drawColor(c, ctx);
       break;
-    case 32:
-      if (currentMode == modes.CHANGE_COLOR) {
-        currentMode = modes.SAME_COLOR;
+    case 50:
+      if (currentPieceMode == pieceModes.PLACE) {
+        currentPieceMode = pieceModes.REMOVE;
       } else {
-        currentMode = modes.CHANGE_COLOR;
+        currentPieceMode = pieceModes.PLACE;
       }
-      drawMode(c, ctx);
+      drawPieceMode(c, ctx);
+      break;
+    case 32:
+      if (currentColorMode == colorModes.CHANGE_COLOR) {
+        currentColorMode = colorModes.SAME_COLOR;
+      } else {
+        currentColorMode = colorModes.CHANGE_COLOR;
+      }
+      drawColorMode(c, ctx);
       break;
     case 106:
       mData = moveData.pop();
       if (mData != undefined) {
-        boardData[mData.x][mData.y] = null;
+        if (mData.type == pieceModes.PLACE) {
+          boardData[mData.x][mData.y] = null;
+        } else {
+          boardData[mData.x][mData.y] = mData.color;
+        }
         redrawBoard(c, ctx);
       }
       break;
@@ -183,8 +216,9 @@ function keyPress(e) {
 }
 
 function init(c, ctx) {
-  currentMode = modes.CHANGE_COLOR;
+  currentColorMode = colorModes.CHANGE_COLOR;
   currentPieceColor = pieceColors.BLACK;
+  currentPieceMode = pieceModes.PLACE;
   boardData = new Array(numLines);
   for (var i = 0; i < numLines; ++i) {
     boardData[i] = new Array(numLines);
