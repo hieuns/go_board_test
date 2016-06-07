@@ -231,3 +231,4 @@ function init(c, ctx) {
 canvas.addEventListener("click", mouseClick, false);
 canvas.addEventListener("keypress", keyPress, false);
 init(canvas, context);
+canvas.focus();
