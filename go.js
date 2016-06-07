@@ -208,10 +208,9 @@ function keyPress(e) {
         redrawBoard(c, ctx);
       }
       break;
-  }
-
-  if (e.keyCode == 8) {
-    clearBoard(c, ctx);
+    case 51:
+      clearBoard(c, ctx);
+      break;
   }
 }
 
